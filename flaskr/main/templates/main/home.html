@@ -1,0 +1,68 @@
+{% extends "main/navbar.html" %} 
+ 
+{% block title %} Home {% endblock %} 
+{% block css %}{{ url_for('static', filename='css/main/home.css') }}{% endblock %}
+
+{% block content %} 
+    <!-- Contenido principal -->
+    <div class="full-width-bg">
+        <h1>Copa Renault</h1>
+    </div>
+    <div class="fade-gradient"></div>
+
+
+    <h1>hola</h1>
+    <h1>hola</h1>
+    <h1>hola</h1>
+    <h1>desde</h1>
+    <h1>fdf</h1>
+    <h1>sad</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>ddsf</h1>
+    <h1>dfg</h1>
+    <h1>dfg</h1>
+    <h1>sfdgh</h1>
+    <h1>dfgh</h1>
+    <h1>dfgh</h1>
+    <h1>dfgh</h1>
+    <h1>dfgh</h1>
+    <h1>dfgh</h1>
+{% endblock %} 
+
+{% block script %}
+<script>
+    $(window).scroll(function() {
+        var scrollDistance = $(window).scrollTop();
+
+        // Altura de transición de tema (20vh desde abajo)
+        var fadeStart = $(window).height() - 100;
+
+        if (scrollDistance >= fadeStart) {
+            // Cambiar a tema oscuro
+            $('nav').removeClass('navbar-light bg-light').addClass('navbar-dark bg-dark');
+            $('body').addClass('dark-bg');
+            $('.fade-gradient').css('opacity', '0');
+        } else {
+            // Cambiar a tema claro
+            $('nav').removeClass('navbar-dark bg-dark').addClass('navbar-light bg-light');
+            $('body').removeClass('dark-bg');
+            $('.fade-gradient').css('opacity', '1');
+        }
+    });
+</script>
+{% endblock %}
+
+Ahora como contenido quiero agregar una imagen que ocupe todo el ancho de la pantalla, que centrado horizontalmente haya un titulo que diga copa renault. Que antes de que se termine haya un gradiente de desvanecimineto y que al pasar por esa altura el tema de la pagina cambie a oscuro (navbar y fondo). Desde ahi mas tarde implementare el resto de la pagina

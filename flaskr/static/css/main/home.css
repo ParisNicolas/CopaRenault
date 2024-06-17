@@ -1,0 +1,47 @@
+/* Estilo para el fondo de la sección con imagen */
+.full-width-bg {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-image: url('/static/img/perro_callejero.jpg'); /* Ruta de tu imagen */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    opacity: 0.7; /* Opacidad del fondo */
+}
+
+/* Estilo para el gradiente de desvanecimiento */
+.fade-gradient {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20vh; /* Altura del gradiente de desvanecimiento */
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none; /* Para que no bloquee los elementos detrás */
+    z-index: 1; /* Asegura que esté sobre el fondo */
+}
+
+/* Estilo oscuro para el navbar */
+.dark-navbar .navbar {
+    background-color: rgba(0, 0, 0, 0.7); /* Color de fondo oscuro con opacidad */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Borde inferior con opacidad */
+    transition: background-color 0.5s ease-out; /* Transición suave */
+    min-height: 50px; /* Altura mínima del navbar */
+}
+
+/* Estilo oscuro para el contenido */
+.dark-bg {
+    background-color: #111; /* Color de fondo oscuro */
+    transition: background-color 0.5s ease-out; /* Transición suave */
+}
+
+/* Estilo para reducir el tamaño del logo */
+.navbar-brand img {
+    max-height: 40px; /* Tamaño máximo del logo */
+}
