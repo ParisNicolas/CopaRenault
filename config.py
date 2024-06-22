@@ -1,25 +1,38 @@
-import os
-from dotenv import load_dotenv
-load_dotenv()
+from decouple import config
 
-class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+DATABASE_URI = config("DATABASE_URL")
+if DATABASE_URI.startswith("mysql://"):
+    DATABASE_URI = DATABASE_URI.replace("mysql://", "mysql+mysqlconnector://", 1)
+
+
+class Config(object):
+    DEBUG = False
+    TESTING = False
+    CSRF_ENABLED = True
+    SECRET_KEY = config("SECRET_KEY", default="guess-me")
+    SQLALCHEMY_DATABASE_URI = DATABASE_URI
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    BCRYPT_LOG_ROUNDS = 13
+    WTF_CSRF_ENABLED = True
+    DEBUG_TB_ENABLED = False
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-class SQLiteConfig(Config):
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLITE_URL') or 'sqlite:///app.db'
 
-class MySQLConfig(Config):
-    MYSQL_USER = os.environ.get('MYSQL_USER')
-    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
-    MYSQL_HOST = os.environ.get('MYSQL_HOST')
-    MYSQL_DB = os.environ.get('MYSQL_DB')
+class DevelopmentConfig(Config):
+    DEVELOPMENT = True
+    DEBUG = True
+    WTF_CSRF_ENABLED = False
+    DEBUG_TB_ENABLED = True
 
-    SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DB}'
 
-def get_config():
-    db_type = os.environ.get('DB_TYPE', 'mysql').lower()
-    if db_type == 'mysql':
-        return MySQLConfig
-    else:
-        return SQLiteConfig
+class TestingConfig(Config):
+    TESTING = True
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///testdb.sqlite"
+    BCRYPT_LOG_ROUNDS = 1
+    WTF_CSRF_ENABLED = False
+
+
+class ProductionConfig(Config):
+    DEBUG = False
+    DEBUG_TB_ENABLED = False

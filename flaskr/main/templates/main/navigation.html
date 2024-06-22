@@ -1,0 +1,35 @@
+<!-- Navigation -->
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand ml-5 d-flex align-items-center" href="#">
+        <img src="{{ url_for('static', filename='img/img_copaRanault2.png') }}" width="40" height="40" class="d-inline-block align-top" alt="Logo">
+        <span class="ml-1">Copa renault</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+        <ul class="navbar-nav ">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.home')}}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.inscribirse')}}">Inscribirse</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.info')}}">Información</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Contacto</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Partidos</a>
+            </li>
+            {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.home')}}" tabindex="-1" aria-disabled="true">Admin</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
