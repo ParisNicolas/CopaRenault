@@ -1,0 +1,153 @@
+{% extends "main/base.html" %} 
+        
+{% block title %} Inscribirse {% endblock %} 
+
+{% block content %} 
+<br>
+<br>
+<div class="container mt-5">
+    <div class="container mt-5 p-3 bg-info rounded">
+        <h1 class="text-warning text-center mb-5">Inscribe un equipo</h1>
+        <form method="POST">
+            {{ form.hidden_tag() }}
+            <div class="mb-3 row">
+                <div class="col-6 form-group">
+                    {{ form.colegio.label(class="form-label") }}
+                    {{ form.colegio(class="form-control") }}
+                    {% for error in form.colegio.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col-6">
+                    {{ form.deporte.label(class="form-label") }}
+                    <div>
+                        {% for subfield in form.deporte %}
+                        <div class="form-check form-check-inline">
+                            {{ subfield(class="form-check-input") }}
+                            {{ subfield.label(class="form-check-label") }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% for error in form.deporte.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr>
+            <h3 class="mb-3">Encargado <span class="text-danger">*</span></h3>
+            <div class="row mb-3">
+                <div class="col">
+                    {{ form.encargado(class="form-control", placeholder="Nombre") }}
+                    {% for error in form.encargado.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="col">
+                    {{ form.telefono(class="form-control", placeholder="Telefono") }}
+                    {% for error in form.telefono.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr>
+            <div class="mb-3">
+                {{ form.nombre_equipo.label(class="form-label") }}
+                {{ form.nombre_equipo(class="form-control") }}
+                {% for error in form.nombre_equipo.errors %}
+                    <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <table class="table table-striped table-dark table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">DNI</th>
+                        <th scope="col">Celiaco/vegano</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for integrante in form.integrantes %}
+                    <tr>
+                        <td width="20" scope="row">{{ loop.index }}</td>
+                        <td contenteditable="true" oninput="updateField(this, '{{ integrante.nombre.name }}')"  class="{% if integrante.nombre.errors %}has-error{% endif %}"></td>
+                        <td contenteditable="true" oninput="updateField(this, '{{ integrante.telefono.name }}')"  class="{% if integrante.telefono.errors %}has-error{% endif %}"></td>
+                        <td contenteditable="true" oninput="updateField(this, '{{ integrante.email.name }}')"  class="{% if integrante.email.errors %}has-error{% endif %}"></td>
+                        <td contenteditable="true" oninput="updateField(this, '{{ integrante.dni.name }}')"  class="{% if integrante.dni.errors %}has-error{% endif %}"></td>
+                        <td width="220">
+                            <div class="form-check form-check-inline {% if integrante.celiaco.errors %}has-error{% endif %}">
+                                {{ integrante.celiaco(class="form-check-input") }} {{ integrante.celiaco.label(class="form-check-label") }} 
+                            </div>
+                            <div class="form-check form-check-inline {% if integrante.vegano.errors %}has-error{% endif %}">
+                                {{ integrante.vegano(class="form-check-input") }} {{ integrante.vegano.label(class="form-check-label") }} 
+                            </div>
+                        </td>
+                    </tr>
+                    {{ integrante.nombre(class="form-control d-none") }}
+                    {{ integrante.telefono(class="form-control d-none") }}
+                    {{ integrante.email(class="form-control d-none") }}
+                    {{ integrante.dni(class="form-control d-none") }}
+                    {% for error in integrante.nombre.errors %}
+                        <tr><td colspan="4" class="error-message">{{ error }}</td></tr>
+                    {% endfor %}
+                    {% for error in integrante.telefono.errors %}
+                        <tr><td colspan="4" class="error-message">{{ error }}</td></tr>
+                    {% endfor %}
+                    {% for error in integrante.email.errors %}
+                        <tr><td colspan="4" class="error-message">{{ error }}</td></tr>
+                    {% endfor %}
+                    {% for error in integrante.dni.errors %}
+                        <tr><td colspan="4" class="error-message">{{ error }}</td></tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="form-group">
+                {{ form.recaptcha }}
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <p class="btn btn-warning" onclick="syncData()">actualizar</p>
+          </form>
+    </div>
+</div>
+{% endblock %} 
+
+{% block script %}
+<script>
+    function updateField(editable, fieldName) {
+        let field = document.getElementsByName(fieldName)[0];
+        field.value = editable.innerText;
+    }
+
+    function syncData() {
+        const editables = document.querySelectorAll('td[contenteditable]');
+        editables.forEach(editable => {
+            const fieldName = editable.getAttribute('oninput').split(',')[1].trim().replace("')", "");
+            let field = document.getElementsByName(fieldName)[0];
+            field.value = editable.innerText;
+        });
+    }  
+</script>
+
+{% endblock %}
+
+{% block css %}
+<style>
+    [contenteditable] {
+        border: 1px solid transparent;
+        padding: 5px;
+    }
+    [contenteditable]:focus {
+        outline: none;
+        border: 1px solid #ccc;
+    }
+    .has-error {
+        border-color: #dc3545;
+    }
+    .error-message {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

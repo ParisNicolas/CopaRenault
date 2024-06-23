@@ -35,19 +35,21 @@ set /p secret= Your secret:
 if not exist .env.bat (
     echo Creando archivo .env.bat ...
     if "%secret%"=="" (
-        echo set SECRET_KEY=secretkey123 > .env
+        echo set SECRET_KEY=secretkey123 > .env.bat
     ) else (
-        echo set SECRET_KEY=%secret% > .env
+        echo set SECRET_KEY=%secret% > .env.bat
     )
     echo set DEBUG=True >> .env
-    echo set APP_SETTINGS=config.DevelopmentConfig >> .env
+    echo set APP_SETTINGS=config.DevelopmentConfig >> .env.bat
     if "%url%"=="" (
-        echo set DATABASE_URL=sqlite:///path-to-your-db.db >> .env
+        echo set DATABASE_URL=sqlite:///path-to-your-db.db >> .env.bat
     ) else (
-        echo set DATABASE_URL=%url% >> .env
+        echo set DATABASE_URL=%url% >> .env.bat
     )
-    echo set FLASK_APP=flaskr >> .env
-    echo set FLASK_DEBUG=1 >> .env
+    echo set FLASK_APP=flaskr >> .env.bat
+    echo set FLASK_DEBUG=1 >> .env.bat
+    echo set RECAPTCHA_PUBLIC_KEY=... >> .env.bat
+    echo set RECAPTCHA_PRIVATE_KEY=... >> .env.bat
 )
 call .env.bat
 
