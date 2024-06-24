@@ -1,7 +1,7 @@
 @echo off
 
 echo Creating a virtual environment...
-py 3 -m venv .venv
+python -m venv .venv
 
 if errorlevel 1 (
     echo Failed to create a virtual environment.
@@ -39,7 +39,6 @@ if not exist .env.bat (
     ) else (
         echo set SECRET_KEY=%secret% > .env.bat
     )
-    echo set DEBUG=True >> .env
     echo set APP_SETTINGS=config.DevelopmentConfig >> .env.bat
     if "%url%"=="" (
         echo set DATABASE_URL=sqlite:///path-to-your-db.db >> .env.bat
