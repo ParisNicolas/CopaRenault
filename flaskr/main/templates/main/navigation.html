@@ -1,6 +1,6 @@
 <!-- Navigation -->
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand ml-5 d-flex align-items-center" href="#">
+    <a class="navbar-brand ml-5 d-flex align-items-center" href="{{ url_for('main.home')}}">
         <img src="{{ url_for('static', filename='img/img_copaRanault2.png') }}" width="40" height="40" class="d-inline-block align-top" alt="Logo">
         <span class="ml-1">Copa renault</span>
     </a>
@@ -25,9 +25,14 @@
             <li class="nav-item">
                 <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Partidos</a>
             </li>
+            <!--NO DEBERIA SER ACCESIBLE LA RUTA DE ADMIN POR CUALQUIERA AUN SI NO TIENE LA CONTRASEÑA-->
             {% if current_user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.home')}}" tabindex="-1" aria-disabled="true">Admin</a>
+                    <a class="nav-link text-success" href="{{ url_for('admin.home')}}" tabindex="-1" aria-disabled="true">Admin</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ url_for('admin.home')}}" tabindex="-1" aria-disabled="true">Admin</a>
                 </li>
             {% endif %}
         </ul>

@@ -47,12 +47,12 @@ def info():
 
 
 
-
-@main_bp.route('/inscribirse', methods=('GET', 'POST'))
-def inscribirse():
+@main_bp.route('/inscribirse/', defaults={'deporte': None}, methods=['GET', 'POST'])
+@main_bp.route('/inscribirse/<deporte>', methods=['GET', 'POST'])
+def inscribirse(deporte):
     form = RegistrationForm()
     if form.validate_on_submit():
-        print("gola")
+
         equipo = Equipo(
             nombre=form.nombre_equipo.data,
             deporte=form.deporte.data,
@@ -63,7 +63,7 @@ def inscribirse():
         # Añadir el equipo a la sesión
         db.session.add(equipo)
         db.session.commit()
-        print("sdf")
+
         # Crear objetos Integrante para cada miembro del equipo
         for integrante in form.integrantes:
             integrante_new = Integrante(
@@ -77,7 +77,7 @@ def inscribirse():
             db.session.add(integrante_new)
         # Confirmar todos los cambios en la base de datos
         db.session.commit()
-        print("3456")
+
         flash('El equipo ha sido registrado exitosamente.', 'success')
         return redirect(url_for('main.success'))
     else:
@@ -85,7 +85,9 @@ def inscribirse():
         print("Form errors:", form.errors)
         print("Form errors:", form.integrantes.errors)
         print(form.integrantes.data)
-    return render_template('main/inscribirse-wtf.html', form=form)
+
+    form.deporte.data = deporte
+    return render_template('main/inscribirse-wtf.html', form=form, deporte=deporte)
     #return render_template('main/inscribirse.html')
 
 @main_bp.route('/inscribirse/success')
