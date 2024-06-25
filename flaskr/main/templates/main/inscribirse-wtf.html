@@ -5,11 +5,18 @@
 {% block content %} 
 <br>
 <br>
-<div class="container mt-5">
+<div class="container my-5 ">
     <div class="container mt-5 p-3 bg-info rounded">
         <h1 class="text-warning text-center mb-5">Inscribe un equipo</h1>
         <form method="POST">
             {{ form.hidden_tag() }}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
             <div class="mb-3 row">
                 <div class="col-6 form-group">
                     {{ form.colegio.label(class="form-label") }}
@@ -108,7 +115,6 @@
                 {{ form.recaptcha }}
             </div>
             <button type="submit" class="btn btn-primary">Enviar</button>
-            <p class="btn btn-warning" onclick="syncData()">actualizar</p>
           </form>
     </div>
 </div>
@@ -121,14 +127,24 @@
         field.value = editable.innerText;
     }
 
-    function syncData() {
-        const editables = document.querySelectorAll('td[contenteditable]');
-        editables.forEach(editable => {
-            const fieldName = editable.getAttribute('oninput').split(',')[1].trim().replace("')", "");
-            let field = document.getElementsByName(fieldName)[0];
-            field.value = editable.innerText;
+    function validateForm() {
+        let table = document.querySelector("table tbody");
+        let rows = table.querySelectorAll("tr");
+        let valid = false;
+
+        rows.forEach(row => {
+            let cells = row.querySelectorAll("td");
+            cells.forEach(cell => {
+                if (cell.textContent.trim() !== "") {
+                    valid = true;
+                }
+            });
         });
-    }  
+
+        if (!valid) {
+            alert("Por favor, complete la tabla antes de enviar.");
+        }
+    }
 </script>
 
 {% endblock %}

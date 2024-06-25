@@ -84,7 +84,7 @@ def inscribirse(deporte):
         # Debugging: Print form errors
         print("Form errors:", form.errors)
         print("Form errors:", form.integrantes.errors)
-        print(form.integrantes.data)
+        #print(form.integrantes.data)
 
     form.deporte.data = deporte
     return render_template('main/inscribirse-wtf.html', form=form, deporte=deporte)
@@ -92,4 +92,4 @@ def inscribirse(deporte):
 
 @main_bp.route('/inscribirse/success')
 def success():
-    return "Formulario enviado con éxito"
+    return "<h1>Formulario enviado con éxito</h1>"
