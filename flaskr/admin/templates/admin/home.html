@@ -3,5 +3,33 @@
 {% block content %}
 
 <h1>Your are logged in Congratulations</h1>
+<br>
+<br>
+<div class="container">
+    <div class="d-flex">
+        <a class="box-link" href="{{ url_for('admin.inscripciones')}}">
+            <h1>Inscripsiones</h1>
+        </a>
+    </div>
+</div>
 
+{% endblock %}
+
+{% block css %}
+<style>
+    .box-link{
+        background: #b34444;
+        padding: 40px;
+        border: #b30440;
+        border-radius: 20px;
+        text-decoration: none;
+        color: black;
+        transition-duration: .1s;
+    }
+    .box-link:hover{
+        cursor: pointer;
+        scale: 1.02;
+        color: black;
+    }
+</style>
 {% endblock %}

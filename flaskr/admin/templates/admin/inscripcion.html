@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+<h1><a href="{{ url_for('admin.inscripciones') }}">Equipo {{ equipo.id }}</a></h1>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        <h1 class="display-4"> {{ equipo.nombre }}</h1>
+        <div>
+            <button class="btn btn-info btn-mb">Editar</button>
+            <a href="inscripciones/eliminar/' + row[0] + '" class="btn btn-danger btn-mb">Eliminar</a>
+        </div>
+        
+    </div>
+    
+    <p>Datos:</p>
+    <ul class="list-group">
+        <li class="list-group-item">Deporte: {{ equipo.deporte }}</li>
+        <li class="list-group-item">Colegio: {{ equipo.colegio }}</li>
+        <li class="list-group-item">Encargado: {{ equipo.nombre_encargado }}</li>
+        <li class="list-group-item">Telegono: {{ equipo.telefono_encargado }}</li>
+    </ul>
+  </div>
+  
+  <!-- Integrantes -->
+  <div class="container container-lg">
+    <h2 class="display-5 mt-3">Integrantes</h2>
+    <div class="d-flex">
+      {% for integrante in equipo.integrantes %}
+          <div class="card me-2 mb-2">
+            <div class="card-body">
+              <h5 class="card-title">{{ integrante.nombre }}</h5>
+              <p class="card-text">ID: {{ integrante.id }}</p>
+              <p class="card-text">DNI: {{ integrante.DNI }}</p>
+              <p class="card-text">TEL: {{ integrante.telefono }}</p>
+              <p class="card-text">{% if integrante.celiaco %}Celiaco{% endif %} {% if integrante.vegano %}Vegano{% endif %} </p>
+            </div>
+          </div>
+      {% endfor %}
+    </div>
+    <div class="d-flex justify-content-end">
+        <button class="mt-5 btn btn-warning btn-lg">Confirmar</button>
+    </div>
+  </div>
+{% endblock %}

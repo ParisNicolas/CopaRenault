@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+<h1>Planilla</h1>
+
+<table id="equiposTable" class="display">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Colegio</th>
+            <th>Deporte</th>
+            <th>Encargado</th>
+            <th>Cantidad de Integrantes</th>
+            <th>Nombre</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipo in equipos %}
+            <tr>
+                <td>{{ equipo.id }}</td>
+                <td>{{ equipo.colegio }}</td>
+                <td>{{ equipo.deporte }}</td>
+                <td>{{ equipo.nombre_encargado }}</td>
+                <td>{{ equipo.integrantes.count() }}</td>
+                <td>{{ equipo.nombre }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready( function () {
+        $('#equiposTable').DataTable({
+            "columnDefs": [
+            {
+                "targets": -1, // Agregar la columna de botones al final
+                "render": function(data, type, row) {
+                    return '<a href="inscripciones/eliminar/' + row[0] + '" class="btn btn-danger btn-sm">Eliminar</a>';
+                }
+            }],
+            "rowCallback": function(row, data) {
+                    $(row).on('click', function() {
+                        window.location.href = 'inscripciones/' + data[0];
+                    });
+            }
+        });
+    } );
+</script>
+{% endblock %}
+
+{% block css %}
+<style>
+</style>
+{% endblock %}
