@@ -34,8 +34,9 @@ class Equipo(db.Model):
     colegio = db.Column(db.String(100), nullable=False)
     nombre_encargado = db.Column(db.String(50), nullable=False)
     telefono_encargado = db.Column(db.String(20), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.now, nullable=False)
     pagado = db.Column(db.Boolean, default=False)
-
+    
     integrantes = db.relationship('Integrante', backref='equipo', lazy='dynamic')
     partidos = db.relationship('Partido', secondary=partidos_equipos, back_populates='equipos')
 

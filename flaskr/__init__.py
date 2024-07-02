@@ -63,7 +63,7 @@ def create_app(test_config=None):
     login_manager.login_view = "admin.login"
     login_manager.login_message_category = "danger"
     @login_manager.user_loader
-    @cache.cached(timeout=300, key_prefix='user_')
+    @cache.cached(timeout=500, key_prefix='user_')
     def load_user(user_id):
         return Usuario.query.get(int(user_id)) #.filter(Usuario.id == int(user_id)).first()
     

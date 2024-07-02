@@ -1,11 +1,29 @@
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, flash, redirect, render_template, request, url_for, abort
 from flask_login import login_required, login_user, logout_user, current_user
+from sqlalchemy import text
+from functools import wraps
+
 from flaskr import bcrypt, db
 from flaskr.models import Usuario, Equipo
-
-from .forms import LoginForm
+from .forms import LoginForm, SQLQueryForm
 
 admin = Blueprint('admin', __name__, url_prefix='/admin', template_folder='templates')
+
+#Decorador personalizado para rutas con privilegios de administrador
+def admin_required(func):
+    @wraps(func)
+    def decorated_view(*args, **kwargs):
+        if not current_user.is_admin:
+            abort(403)  # Error 403 Forbidden si el usuario no es administrador
+        return func(*args, **kwargs)
+    return decorated_view
+
+
+@admin.errorhandler(403)
+def forbidden_error(error):
+    return render_template('admin/403.html'), 403
+
+
 
 @admin.route('/')
 @login_required
@@ -41,7 +59,7 @@ def logout():
 @login_required
 def inscripciones():
     equipos = Equipo.query.filter(Equipo.pagado == False).all()
-    return render_template('admin/inscripciones.html', equipos=equipos)
+    return render_template('admin/inscripciones.html', equipos=equipos, confirmadas=False)
 
 @admin.route('/inscripciones/<int:id>')
 @login_required
@@ -50,13 +68,21 @@ def inscripcion_id(id):
     integrantes = equipo.integrantes.all()
     return render_template('admin/inscripcion.html', equipo=equipo, integrantes=integrantes)
 
+
+@admin.route('/inscripciones_confirmadas')
+@login_required
+def inscripciones_confirmadas():
+    equipos = Equipo.query.filter(Equipo.pagado == True).all()
+    return render_template('admin/inscripciones.html', equipos=equipos, confirmadas=True)
+
+
 @admin.route('/inscripciones/confirmar/<int:id>')
 @login_required
 def confirmar_inscripcion(id):
     db.session.query(Equipo).filter_by(id=id).update({"pagado": True}, synchronize_session=False)
     db.session.commit()
     flash("Formulario aceptado", "success")
-    return render_template('admin/inscripcion.html')
+    return redirect(url_for("admin.inscripciones"))
 
 @admin.route('/inscripciones/eliminar/<int:id>')
 @login_required
@@ -70,10 +96,27 @@ def eliminar_equipo(id):
             # Eliminar el equipo
             db.session.delete(equipo)
             db.session.commit()
-            flash("Equipo eliminado con éxito", "success")
+            flash(f"Equipo {equipo.id} eliminado con éxito", "success")
             return redirect(url_for("admin.inscripciones"))  # Redirigir a la página de inicio
         except Exception as e:
             db.session.rollback()
             return f"Error al eliminar equipo: {e}"
     flash("Equipo no encontrado", "warning")
     return redirect(url_for("admin.inscripciones"))  # Redirigir a la página de inicio
+
+@admin.route('/sql_form', methods=['GET', 'POST'])
+@login_required
+def SQL_Form():
+    form = SQLQueryForm()
+    result = None
+    columns = []
+    if form.validate_on_submit():
+        query = form.query.data
+        try:
+            result = db.session.execute(text(query))
+            columns = result.keys()
+            #result = [dict(row) for row in result]
+            db.session.commit()
+        except Exception as e:
+            result = str(e)
+    return render_template('admin/SQLForm.html', form=form, result=result, columns=columns)

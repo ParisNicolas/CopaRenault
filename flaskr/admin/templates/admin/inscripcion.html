@@ -2,14 +2,21 @@
 
 {% block content %}
 
+{% if equipo.pagado %}
+<div class="alert alert-success text-center"><h2>El Equipo ya esta confirmado!!!</h2></div>
+{% endif %}
+
 <h1><a href="{{ url_for('admin.inscripciones') }}">Equipo {{ equipo.id }}</a></h1>
 <div class="container">
     <div class="d-flex justify-content-between">
         <h1 class="display-4"> {{ equipo.nombre }}</h1>
+
+        {% if not equipo.pagado %}
         <div>
             <button class="btn btn-info btn-mb">Editar</button>
-            <a href="inscripciones/eliminar/' + row[0] + '" class="btn btn-danger btn-mb">Eliminar</a>
+            <a href="{{ url_for('admin.eliminar_equipo', id=equipo.id) }}" class='btn btn-danger btn-mb'>Eliminar</a>
         </div>
+        {% endif %}
         
     </div>
     
@@ -18,28 +25,39 @@
         <li class="list-group-item">Deporte: {{ equipo.deporte }}</li>
         <li class="list-group-item">Colegio: {{ equipo.colegio }}</li>
         <li class="list-group-item">Encargado: {{ equipo.nombre_encargado }}</li>
-        <li class="list-group-item">Telegono: {{ equipo.telefono_encargado }}</li>
+        <li class="list-group-item">Telefono: {{ equipo.telefono_encargado }}</li>
     </ul>
   </div>
   
   <!-- Integrantes -->
   <div class="container container-lg">
     <h2 class="display-5 mt-3">Integrantes</h2>
-    <div class="d-flex">
+    <div class="row">
       {% for integrante in equipo.integrantes %}
-          <div class="card me-2 mb-2">
-            <div class="card-body">
+          <div class="card me-3 mb-3 col-2">
+            <div class="card-body d-flex flex-column justify-content-between">
               <h5 class="card-title">{{ integrante.nombre }}</h5>
-              <p class="card-text">ID: {{ integrante.id }}</p>
-              <p class="card-text">DNI: {{ integrante.DNI }}</p>
-              <p class="card-text">TEL: {{ integrante.telefono }}</p>
-              <p class="card-text">{% if integrante.celiaco %}Celiaco{% endif %} {% if integrante.vegano %}Vegano{% endif %} </p>
+              <div class="card-text">
+                <hr>
+                <p><b>ID:</b> {{ integrante.id }}</p>
+                <p><b>DNI:</b> {{ integrante.DNI }}</p>
+                <p><b>TEL:</b> {{ integrante.telefono }}</p>
+                <p>{% if integrante.celiaco %}Celiaco{% endif %} {% if integrante.vegano %}Vegano{% endif %} </p>
+              </div>
+              
             </div>
           </div>
       {% endfor %}
     </div>
+    {% if not equipo.pagado %}
     <div class="d-flex justify-content-end">
-        <button class="mt-5 btn btn-warning btn-lg">Confirmar</button>
+        <a href="{{ url_for('admin.confirmar_inscripcion', id=equipo.id) }}" class="mt-5 btn btn-warning btn-lg">Confirmar</a>
     </div>
+    {% endif %}
   </div>
+{% endblock %}
+
+{% block js %}
+<script>
+</script>
 {% endblock %}
