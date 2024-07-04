@@ -3,7 +3,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from sqlalchemy import text
 from functools import wraps
 
-from flaskr import bcrypt, db
+from flaskr import bcrypt, db, cache
 from flaskr.models import Usuario, Equipo
 from .forms import LoginForm, SQLQueryForm
 
@@ -40,6 +40,7 @@ def login():
     if form.validate_on_submit():
         user = Usuario.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, request.form["password"]):
+            cache.clear() # Mejor seria solo borrar la cache del usuario
             login_user(user)
             return redirect(url_for("admin.home"))
         else:
@@ -106,6 +107,7 @@ def eliminar_equipo(id):
 
 @admin.route('/sql_form', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def SQL_Form():
     form = SQLQueryForm()
     result = None
@@ -114,9 +116,13 @@ def SQL_Form():
         query = form.query.data
         try:
             result = db.session.execute(text(query))
-            columns = result.keys()
-            #result = [dict(row) for row in result]
             db.session.commit()
+            if result.returns_rows:
+                columns = result.keys()
+            else:
+                result = "Query executed successfully."
+            #result = [dict(row) for row in result]
+            
         except Exception as e:
             result = str(e)
     return render_template('admin/SQLForm.html', form=form, result=result, columns=columns)

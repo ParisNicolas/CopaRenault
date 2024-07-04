@@ -30,6 +30,7 @@
                 </tr>
             </thead>
             <tbody>
+                {% if not result == "Query executed successfully." %}
                 {% for row in result %}
                     <tr>
                         {% for column in columns %}
@@ -37,6 +38,7 @@
                         {% endfor %}
                     </tr>
                 {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     {% endif %}

@@ -8,17 +8,19 @@
           <li><a href="{{ url_for('admin.home') }}" class="nav-link px-2 text-secondary">Admin</a></li>
           {% if current_user.is_authenticated %}
             <li><a href="{{ url_for('admin.inscripciones') }}" class="nav-link px-2 text-secondary">Inscripciones</a></li>
+            <li><a href="{{ url_for('admin.SQL_Form') }}" class="nav-link px-2 text-secondary">SQL Query</a></li>
           {% endif %}
         </ul>
   
         <div class="text-end">
           {% if current_user.is_authenticated %}
+          <small class="me-4 text-info">{{ current_user.email.split('@')[0] }}</small>
           <a href="{{ url_for('admin.logout') }}"><button type="button" class="btn btn-danger me-2">Logout</button></a>
           {% else %}
             <a href="{{ url_for('admin.login') }}"><button type="button" class="btn btn-outline-light me-2">Login</button></a>
           {% endif %}
             
         </div>
-      </div>
     </div>
+  </div>
   </header>
