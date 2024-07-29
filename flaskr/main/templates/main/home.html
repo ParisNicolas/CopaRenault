@@ -52,36 +52,36 @@
         <div class="d-flex flex-column mt-5">
             {% for sponsor in sponsors %}
             {% if loop.index is even %}
-            <div class="d-flex justify-content-end">
+            <div class="d-flex justify-content-end" style="height: 200px;">
                 <a href="{{ sponsor['website_link'] }}" class="card card-link mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                      <div class="col-md-8">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ sponsor['title'] }}</h5>
-                          <p class="card-text">{{ sponsor['description'] }}</p>
-                          <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                    <div class="row g-0 align-items-center" style="overflow: hidden;">
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ sponsor['title'] }}</h5>
+                                <p class="card-text">{{ sponsor['description'] }}</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
                         </div>
-                      </div>
-                      <div class="col-md-4">
-                        <img src="{{ sponsor['image_link'] }}" class="img-fluid rounded-start" alt="...">
-                      </div>
+                        <div class="col-md-6 position-relative"> 
+                          <img src="{{ sponsor['image_link'] }}" class="rounded-start bottom-0" alt="..." style="height: 220px; width: 100%; object-fit: cover;">
+                        </div>
                     </div>
                 </a>
             </div>
             {% else %}
-            <div class="d-flex">
+            <div class="d-flex" style="height: 200px;">
                 <a href="{{ sponsor['website_link'] }}" class="card card-link mb-3" style="max-width: 540px;">
-                    <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="{{ sponsor['image_link'] }}" class="img-fluid rounded-start" alt="...">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ sponsor['title'] }}</h5>
-                          <p class="card-text">{{ sponsor['description'] }}</p>
-                          <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                    <div class="row g-0 align-items-center " style="overflow: hidden;">
+                        <div class="col-md-6 position-relative"> 
+                          <img src="{{ sponsor['image_link'] }}" class="rounded-start" alt="..." style="height: 220px; width: 100%; object-fit: cover;">
                         </div>
-                      </div>
+                        <div class="col-md-6">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ sponsor['title'] }}</h5>
+                                <p class="card-text">{{ sponsor['description'] }}</p>
+                                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+                            </div>
+                        </div>
                     </div>
                 </a>
             </div>

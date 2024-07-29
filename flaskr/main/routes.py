@@ -21,13 +21,13 @@ sponsors = [
         'website_link': 'https://www.coca-cola.com/ar/es'
     },
     {
-        'image_link': 'https://example.com/sponsor3.jpg',
+        'image_link': 'https://ecoobjetivo.com.ar/static/custom/logo-grande.png?t=2024-07-20+03%3A01%3A05.868706',
         'title': 'Cuidado Ambiental S.A.',
         'description': 'Comprometidos con la preservación del medio ambiente en Argentina.',
         'website_link': 'https://www.cuidadoambiental.com.ar'
     },
     {
-        'image_link': 'https://example.com/sponsor4.jpg',
+        'image_link': 'https://cdn1.businessintriper.com/wp-content/uploads/2020/02/13200617/Patagonia-argentina.png',
         'title': 'Turismo Patagónico',
         'description': 'Descubre la belleza natural de la Patagonia Argentina con nosotros.',
         'website_link': 'https://www.turismopatagonico.com.ar'
