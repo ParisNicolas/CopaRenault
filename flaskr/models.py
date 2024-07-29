@@ -4,7 +4,6 @@ from . import db, bcrypt
 from flask_login import UserMixin
 
 class Usuario(UserMixin, db.Model):
-
     __tablename__ = "usuarios"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,13 +29,14 @@ partidos_equipos = db.Table('partidos_equipos',
 
 class Equipo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(40))
+    nombre = db.Column(db.String(50))
     deporte = db.Column(db.Enum('futbol', 'basket', 'voley', name='deporte'), nullable=False)
-    colegio = db.Column(db.String(50), nullable=False)
-    nombre_encargado = db.Column(db.String(30), nullable=False)
-    telefono_encargado = db.Column(db.String(15), nullable=False)
+    colegio = db.Column(db.String(100), nullable=False)
+    nombre_encargado = db.Column(db.String(50), nullable=False)
+    telefono_encargado = db.Column(db.String(20), nullable=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.now, nullable=False)
     pagado = db.Column(db.Boolean, default=False)
-
+    
     integrantes = db.relationship('Integrante', backref='equipo', lazy='dynamic')
     partidos = db.relationship('Partido', secondary=partidos_equipos, back_populates='equipos')
 
@@ -45,9 +45,9 @@ class Equipo(db.Model):
 
 class Integrante(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(64), nullable=False)
-    telefono = db.Column(db.String(15), unique=True, nullable=False)
-    DNI = db.Column(db.String(8), unique=True, nullable=False)
+    nombre = db.Column(db.String(50), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)
+    DNI = db.Column(db.String(8), nullable=False)
     celiaco = db.Column(db.Boolean, default=False)
     vegano = db.Column(db.Boolean, default=False)
     group_id = db.Column(db.Integer, db.ForeignKey('equipo.id'))

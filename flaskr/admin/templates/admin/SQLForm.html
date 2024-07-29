@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="mt-5">SQL Query Executor</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.query.label(class="form-control-label") }}
+            {{ form.query(class="form-control") }}
+        </div>
+        <div class="form-group mt-3">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+    {% if result %}
+        <h2 class="mt-5">Results</h2>
+        <pre>{{ result }}</pre>
+        <pre>{{ columns }}</pre>
+    {% endif %}
+    {% if result %}
+        <h2 class="mt-5">Results</h2>
+        <table id="resultTable" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th>{{ column }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if not result == "Query executed successfully." %}
+                {% for row in result %}
+                    <tr>
+                        {% for column in columns %}
+                            <td>{{ row[column] }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        $('#resultTable').DataTable();
+    });
+</script>
+{% endblock %}

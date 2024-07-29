@@ -63,12 +63,12 @@ def create_app(test_config=None):
     login_manager.login_view = "admin.login"
     login_manager.login_message_category = "danger"
     @login_manager.user_loader
-    @cache.cached(timeout=300, key_prefix='user_')
+    @cache.cached(timeout=500, key_prefix='user_')
     def load_user(user_id):
         return Usuario.query.get(int(user_id)) #.filter(Usuario.id == int(user_id)).first()
     
     """Comandos"""
-    @app.cli.command("register-user")
+    @app.cli.command("create_user")
     @click.argument("email")
     @click.argument("password")
     def create_user(email, password):
@@ -78,7 +78,7 @@ def create_app(test_config=None):
         db.session.commit()
         click.echo(f"User {email} created successfully!")
 
-    @app.cli.command("remove-user")
+    @app.cli.command("remove_user")
     @click.argument("email")
     def remove_user(email):
         user = Usuario.query.filter_by(email=email).first()
