@@ -20,7 +20,7 @@
             <div class="mb-3 row">
                 <div class="col-6 form-group">
                     {{ form.colegio.label(class="form-label") }}
-                    {{ form.colegio(class="form-control") }}
+                    {{ form.colegio(class="form-control", placeholder="Nombre del colegio") }}
                     {% for error in form.colegio.errors %}
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
@@ -28,12 +28,25 @@
                 <div class="col-6">
                     {{ form.deporte.label(class="form-label") }}
                     <div>
+                        <div class="d-inline radio-img-div pr-2">
+                            <img id="futbol" class="radio-img {% if deporte == 'futbol' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/soccer-ball-illustration-png.webp') }}" alt="futbol">
+                        </div>
+                        <div class="d-inline radio-img-div pr-2">
+                            <img id="basket" class="radio-img {% if deporte == 'basket' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/sport-ball-basketball-png.png') }}" alt="basket">
+                        </div>
+                        <div class="d-inline radio-img-div">
+                            <img id="voley" class="radio-img mr-2 {% if deporte == 'voley' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/sport-ball-volleyball-free-png.png') }}" alt="voley">
+                        </div>
+                        
+                        {{ form.deporte(class="d-none") }}
+                        {#
                         {% for subfield in form.deporte %}
                         <div class="form-check form-check-inline">
                             {{ subfield(class="form-check-input") }}
                             {{ subfield.label(class="form-check-label") }}
                         </div>
                         {% endfor %}
+                        #}
                     </div>
                     {% for error in form.deporte.errors %}
                     <div class="error-message">{{ error }}</div>
@@ -122,6 +135,28 @@
 
 {% block script %}
 <script>
+    const images = document.querySelectorAll('.radio-img');
+    const ul = document.getElementById('deporte');
+    const inputs = Array.from(ul.getElementsByTagName('input'));
+
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            // Remover la clase 'selected' de todas las imágenes
+            images.forEach(img => img.classList.remove('selected-radio'));
+
+            // Añadir la clase 'selected' a la imagen que se hizo clic
+            this.classList.add('selected-radio');
+
+
+            inputs.forEach(radio => {
+                if (radio.value == this.id) {
+                    console.log(radio.value)
+                    radio.checked = true;
+                }
+            });
+        });
+    });
+
     function updateField(editable, fieldName) {
         let field = document.getElementsByName(fieldName)[0];
         field.value = editable.innerText;
@@ -151,6 +186,21 @@
 
 {% block css %}
 <style>
+
+    .radio-img{
+        height: 45px;
+    }
+
+    .radio-img-div:hover {
+        cursor: pointer;
+    }
+
+    .selected-radio{
+        height: 50px;
+        border-radius: 50%;
+        border: 2px dotted blue
+    }
+
     [contenteditable] {
         border: 1px solid transparent;
         padding: 5px;
