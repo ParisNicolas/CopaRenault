@@ -1,0 +1,299 @@
+{% extends "main/base.html" %} 
+        
+{% block title %} Inscribirse {% endblock %} 
+
+{% block content %} 
+<br>
+<br>
+
+<div class="container my-5 mt-5 p-3 bg-info rounded">
+    <h1 class="text-warning text-center mb-5">Inscribe un equipo</h1>
+    <form id="team-form">
+        {#Flashed Messages, enviados desde el backend#}
+        {{ form.hidden_tag() }}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {#FORMULARIO#}
+        <div class="mb-3 row">
+            {#colegio#}
+            <div class="col-6 form-group">
+                <label class="form-label" for="colegio">Colegio</label>
+                <input value="Juan pablo apostol" class="form-control" id="colegio" maxlength="100" minlength="2" name="colegio" placeholder="Nombre del colegio" required type="text">
+                {% for error in form.colegio.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {#Deporte#}
+            <div class="col-6">
+                <label class="form-label">Deporte</label>
+                <div>
+                    <div class="d-inline radio-img-div pr-2">
+                        <img id="futbol" class="radio-img {% if deporte == 'futbol' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/soccer-ball-illustration-png.webp') }}" alt="futbol">
+                    </div>
+                    <div class="d-inline radio-img-div pr-2">
+                        <img id="basket" class="radio-img {% if deporte == 'basket' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/sport-ball-basketball-png.png') }}" alt="basket">
+                    </div>
+                    <div class="d-inline radio-img-div">
+                        <img id="voley" class="radio-img mr-2 {% if deporte == 'voley' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/sport-ball-volleyball-free-png.png') }}" alt="voley">
+                    </div>
+                </div>
+                {% for error in form.deporte.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+
+        {#ENCARGADO#}
+        <h3 class="mb-3">Encargado <span class="text-danger">*</span></h3>
+        <div class="row mb-3">
+            <div class="col">
+                <input value="Juancho Pepes" class="form-control" id="encargado" maxlength="50" minlength="2" name="encargado" placeholder="Nombre" required type="text">
+                {% for error in form.encargado.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="col">
+                <input value="3512343879" class="form-control" id="telefono" name="telefono" placeholder="Telefono" required type="tel">
+                {% for error in form.telefono.errors %}
+                <div class="error-message">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+
+        {#Nombre del equipo (opcional)#}
+        <div class="mb-3">
+            <label class="form-label" for="nombre_equipo">Nombre del equipo (Opcional)</label>
+            <input value="Warriors" class="form-control" id="nombre_equipo" maxlength="50" name="nombre_equipo" type="text">
+            {% for error in form.nombre_equipo.errors %}
+                <div class="error-message">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        {#INTEGRANTES#}
+        <table id="team-table" class="table table-striped table-dark table-hover table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">DNI</th>
+                    <th scope="col">Celiaco/vegano</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for integrante in form.integrantes %}
+                <tr>
+                    <td width="20" scope="row">{{ loop.index }}</td>
+                    <td contenteditable="true" data-field="nombre" class="{% if integrante.nombre.errors %}has-error{% endif %}">pepe{{'' if integrante.nombre.data == none else integrante.nombre.data}}</td>
+                    <td contenteditable="true" data-field="telefono" class="{% if integrante.telefono.errors %}has-error{% endif %}">pepe{{ '' if integrante.telefono.data == none else integrante.telefono.data }}</td>
+                    <td contenteditable="true" data-field="email" class="{% if integrante.email.errors %}has-error{% endif %}">pepe{{ '' if integrante.email.data == none else integrante.email.data }}</td>
+                    <td contenteditable="true" data-field="dni" class="{% if integrante.dni.errors %}has-error{% endif %}">pepe{{ '' if integrante.dni.data == none else integrante.dni.data }}</td>
+                    <td width="220">
+                        <div class="form-check form-check-inline {% if integrante.celiaco.errors %}has-error{% endif %}">
+                            <input class="form-check-input" type="checkbox" name="options" value="celiaco">
+                            <label class="form-check-label">Celiaco</label>
+                        </div>
+                        <div class="form-check form-check-inline {% if integrante.vegano.errors %}has-error{% endif %}">
+                            <input class="form-check-input" type="checkbox" name="options" value="vegano">
+                            <label class="form-check-label" for="inlineRadio2">Vegano</label>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="alert alert-warning d-none" role="alert" id="table-alert">
+            ¡¡Por favor complete los datos faltantes!!
+        </div>
+        <div class="ms-auto mb-3">
+            <button type="button" id="add-row-btn" class="btn btn-secondary" onclick="addRow()">Agregar Miembro</button>
+            <button type="button" id="remove-row-btn" class="btn btn-danger" onclick="removeRow()" disabled>Eliminar</button>
+        </div>
+        {#Recaptcha y Submit#}
+        <div class="form-group">
+            {{ form.recaptcha }}
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+</div>
+{% endblock %} 
+
+{% block script %}
+<script>
+    const images = document.querySelectorAll('.radio-img');
+    let deporte = {{ deporte|tojson }};
+
+    images.forEach(image => {
+        image.addEventListener('click', function() {
+            // Remover la clase 'selected' de todas las imágenes
+            images.forEach(img => img.classList.remove('selected-radio'));
+
+            // Añadir la clase 'selected' a la imagen que se hizo clic
+            this.classList.add('selected-radio');
+
+            deporte = this.id;
+        });
+    });
+
+
+    function updateButtonState() {
+        const table = document.getElementById('team-table').getElementsByTagName('tbody')[0];
+        const rowCount = table.rows.length;
+
+        // Deshabilitar botón de agregar si hay 12 filas
+        document.getElementById('add-row-btn').disabled = rowCount >= 12;
+        document.getElementById('remove-row-btn').disabled = rowCount <= 8;
+    }
+
+    function addRow() {
+        const table = document.getElementById('team-table').getElementsByTagName('tbody')[0];
+        const rowCount = table.rows.length;
+
+        if (rowCount < 12) {
+            const newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td width="20" scope="row">${rowCount + 1}</td>
+                <td contenteditable="true" data-field="nombre"></td>
+                <td contenteditable="true" data-field="telefono"></td>
+                <td contenteditable="true" data-field="email"></td>
+                <td contenteditable="true" data-field="dni"></td>
+                <td width="220">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="options" value="celiaco">
+                        <label class="form-check-label">Celiaco</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" name="options" value="vegano">
+                        <label class="form-check-label" for="inlineRadio2">Vegano</label>
+                    </div>
+                </td>
+            `;
+        }
+        updateButtonState();
+    }
+
+    function removeRow() {
+        const table = document.getElementById('team-table').getElementsByTagName('tbody')[0];
+        const rowCount = table.rows.length;
+
+        if (rowCount > 8) {
+            table.deleteRow(rowCount - 1);
+        }
+        updateButtonState();
+    }
+
+    document.getElementById('team-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const form = document.getElementById('team-form');
+        const colegio = form.colegio.value;
+        const encargado = form.encargado.value;
+        const telefono = form.telefono.value;
+        const nombre_equipo = form.nombre_equipo.value;
+
+        const rows = form.querySelectorAll('tbody tr');
+        let isValid = true;
+        const integrantes = [];
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const nombre = cells[1].innerText.trim();
+            const telefono = cells[2].innerText.trim();
+            const email = cells[3].innerText.trim();
+            const dni = cells[4].innerText.trim();
+
+            alerta = document.getElementById('table-alert');
+            if (!nombre || !telefono || !email || !dni) {
+                isValid = false;
+                //row.style.backgroundColor = 'lightcoral'; // Color para filas no válidas
+                alerta.classList.remove('d-none');
+
+                cells[1].style.backgroundColor = !nombre ? 'lightcoral':'';
+                cells[2].style.backgroundColor = !telefono ? 'lightcoral':'';
+                cells[3].style.backgroundColor = !email ? 'lightcoral':'';
+                cells[4].style.backgroundColor = !dni ? 'lightcoral':'';
+                return;
+            } else {
+                alerta.classList.add('d-none');
+                row.style.backgroundColor = ''; // Resetear color
+            }
+
+            const checkboxes = cells[5].querySelectorAll('input[type="checkbox"]');
+            const celiaco = checkboxes[0].checked;
+            const vegano = checkboxes[1].checked;
+
+            integrantes.push({ nombre, telefono, email, dni, celiaco, vegano });
+        });
+
+        const data = { deporte, colegio, encargado, telefono, nombre_equipo, integrantes };
+
+        fetch('/inscribirse', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            const errorMessages = document.getElementById('error-messages');
+            if (data.errors) {
+                errorMessages.innerHTML = '';
+                errorMessages.classList.remove('d-none');
+                for (const [field, messages] of Object.entries(data.errors)) {
+                    messages.forEach(message => {
+                        errorMessages.innerHTML += `<p>${field}: ${message}</p>`;
+                    });
+                }
+            } else {
+                errorMessages.classList.add('d-none');
+                console.log('Datos enviados con éxito:', data);
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block css %}
+<style>
+
+    .radio-img{
+        height: 45px;
+    }
+
+    .radio-img-div:hover {
+        cursor: pointer;
+    }
+
+    .selected-radio{
+        height: 50px;
+        border-radius: 50%;
+        border: 2px dotted blue
+    }
+
+    [contenteditable] {
+        border: 1px solid transparent;
+        padding: 5px;
+    }
+    [contenteditable]:focus {
+        outline: none;
+        border: 1px solid #ccc;
+    }
+    .has-error {
+        border-color: #dc3545;
+    }
+    .error-message {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}

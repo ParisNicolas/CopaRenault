@@ -9,6 +9,7 @@
     <div class="container mt-5 p-3 bg-info rounded">
         <h1 class="text-warning text-center mb-5">Inscribe un equipo</h1>
         <form method="POST">
+            {#Flashed Messages, enviados desde el backend#}
             {{ form.hidden_tag() }}
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -17,7 +18,10 @@
                     {% endfor %}
                 {% endif %}
             {% endwith %}
+
+            {#FORMULARIO#}
             <div class="mb-3 row">
+                {#colegio#}
                 <div class="col-6 form-group">
                     {{ form.colegio.label(class="form-label") }}
                     {{ form.colegio(class="form-control", placeholder="Nombre del colegio") }}
@@ -25,6 +29,7 @@
                     <div class="error-message">{{ error }}</div>
                     {% endfor %}
                 </div>
+                {#Deporte#}
                 <div class="col-6">
                     {{ form.deporte.label(class="form-label") }}
                     <div>
@@ -39,14 +44,6 @@
                         </div>
                         
                         {{ form.deporte(class="d-none") }}
-                        {#
-                        {% for subfield in form.deporte %}
-                        <div class="form-check form-check-inline">
-                            {{ subfield(class="form-check-input") }}
-                            {{ subfield.label(class="form-check-label") }}
-                        </div>
-                        {% endfor %}
-                        #}
                     </div>
                     {% for error in form.deporte.errors %}
                     <div class="error-message">{{ error }}</div>
@@ -54,6 +51,8 @@
                 </div>
             </div>
             <hr>
+
+            {#ENCARGADO#}
             <h3 class="mb-3">Encargado <span class="text-danger">*</span></h3>
             <div class="row mb-3">
                 <div class="col">
@@ -70,6 +69,8 @@
                 </div>
             </div>
             <hr>
+
+            {#Nombre del equipo (opcional)#}
             <div class="mb-3">
                 {{ form.nombre_equipo.label(class="form-label") }}
                 {{ form.nombre_equipo(class="form-control") }}
@@ -77,6 +78,8 @@
                     <div class="error-message">{{ error }}</div>
                 {% endfor %}
             </div>
+
+            {#INTEGRANTES#}
             <table class="table table-striped table-dark table-hover table-bordered">
                 <thead>
                     <tr>
@@ -124,6 +127,8 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            {#Recaptcha y Submit#}
             <div class="form-group">
                 {{ form.recaptcha }}
             </div>

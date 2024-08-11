@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, url_for, redirect, flash
+from flask import Blueprint, render_template, url_for, redirect, flash, request
 from datetime import datetime
-from .forms import RegistrationForm
 
+from .forms import RegistrationForm
 from flaskr.models import Equipo, Integrante
 from flaskr import db
 
@@ -46,49 +46,104 @@ def info():
     return render_template('main/info.html')
 
 
+#SOLO PARA EXPERIMENTAR CON FORMULARIO JSON
+@main_bp.route('/form')
+def form_json():
+    form = RegistrationForm()
+    return render_template('main/inscribirse-json.html', form=form, deporte='futbol')
 
 @main_bp.route('/inscribirse/', defaults={'deporte': None}, methods=['GET', 'POST'])
 @main_bp.route('/inscribirse/<deporte>', methods=['GET', 'POST'])
 def inscribirse(deporte):
-    form = RegistrationForm()
-    if form.validate_on_submit():
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        form = RegistrationForm(data=data)
+    else:
+        form = RegistrationForm()
 
+    if form.validate_on_submit():
+        
         equipo = Equipo(
-            nombre=form.nombre_equipo.data,
-            deporte=form.deporte.data,
-            colegio=form.colegio.data,
-            nombre_encargado=form.encargado.data,
-            telefono_encargado=form.telefono.data,
+            nombre = data.nombre,
+            deporte = data.deporte,
+            colegio = data.colegio,
+            nombre_encargado = data.encargado,
+            telefono_encargado = data.telefono,
         )
         # Añadir el equipo a la sesión
-        db.session.add(equipo)
-        db.session.commit()
+        #db.session.add(equipo)
+        #db.session.commit()
+        print(equipo)
 
         # Crear objetos Integrante para cada miembro del equipo
-        for integrante in form.integrantes:
+        for integrante in data.integrantes:
             integrante_new = Integrante(
-                nombre=integrante.nombre.data,
-                telefono=integrante.telefono.data,
-                DNI=integrante.dni.data,
-                celiaco=integrante.celiaco.data,
-                vegano=integrante.vegano.data,
-                group_id=equipo.id
+                nombre = integrante.nombre,
+                telefono = integrante.telefono,
+                DNI = integrante.dni,
+                celiaco = integrante.celiaco,
+                vegano = integrante.vegano,
+                group_id = equipo.id
             )
-            db.session.add(integrante_new)
+            #db.session.add(integrante_new)
         # Confirmar todos los cambios en la base de datos
-        db.session.commit()
+        #db.session.commit()
+        print(data.integrantes.length)
 
         flash('El equipo ha sido registrado exitosamente.', 'success')
         return redirect(url_for('main.success'))
     else:
         # Debugging: Print form errors
         print("Form errors:", form.errors)
-        print("Form errors:", form.integrantes.errors)
+        #print("Form errors:", form.integrantes.errors)
         #print(form.integrantes.data)
 
     form.deporte.data = deporte
-    return render_template('main/inscribirse-wtf.html', form=form, deporte=deporte)
-    #return render_template('main/inscribirse.html')
+    return render_template('main/inscribirse-json.html', form=form, deporte=deporte)
+
+# @main_bp.route('/inscribirse/', defaults={'deporte': None}, methods=['GET', 'POST'])
+# @main_bp.route('/inscribirse/<deporte>', methods=['GET', 'POST'])
+# def inscribirse(deporte):
+#     form = RegistrationForm()
+#     if form.validate_on_submit():
+
+#         equipo = Equipo(
+#             nombre=form.nombre_equipo.data,
+#             deporte=form.deporte.data,
+#             colegio=form.colegio.data,
+#             nombre_encargado=form.encargado.data,
+#             telefono_encargado=form.telefono.data,
+#         )
+#         # Añadir el equipo a la sesión
+#         db.session.add(equipo)
+#         db.session.commit()
+
+#         # Crear objetos Integrante para cada miembro del equipo
+#         for integrante in form.integrantes:
+#             integrante_new = Integrante(
+#                 nombre=integrante.nombre.data,
+#                 telefono=integrante.telefono.data,
+#                 DNI=integrante.dni.data,
+#                 celiaco=integrante.celiaco.data,
+#                 vegano=integrante.vegano.data,
+#                 group_id=equipo.id
+#             )
+#             db.session.add(integrante_new)
+#         # Confirmar todos los cambios en la base de datos
+#         db.session.commit()
+
+#         flash('El equipo ha sido registrado exitosamente.', 'success')
+#         return redirect(url_for('main.success'))
+#     else:
+#         # Debugging: Print form errors
+#         print("Form errors:", form.errors)
+#         print("Form errors:", form.integrantes.errors)
+#         #print(form.integrantes.data)
+
+#     form.deporte.data = deporte
+#     return render_template('main/inscribirse-wtf.html', form=form, deporte=deporte)
+#     #return render_template('main/inscribirse.html')
 
 @main_bp.route('/inscribirse/success')
 def success():

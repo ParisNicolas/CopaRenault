@@ -19,55 +19,56 @@
         </div>
     </div>  
     
-    <div class="container mt-4">
-        <!-- Deportes -->
-        <h1 id="inscripciones-title" class="text-info text-center mt-5">Inscripciones</h1>
-        <div class="row text-center mt-5">
-            <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='futbol')}}">
-                <img src="{{ url_for('static', filename='img/soccer-ball-illustration-png.webp') }}" class="img-fluid select-img" alt="futbol">
-                <h2>Futbol</h2>
-            </a>
-            <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='basket')}}">
-                <img src="{{ url_for('static', filename='img/sport-ball-basketball-png.png') }}" class="img-fluid select-img" alt="futbol">
-                <h2>Basket</h2>
-            </a>
-            <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='voley')}}">
-                <img src="{{ url_for('static', filename='img/sport-ball-volleyball-free-png.png') }}" class="img-fluid select-img" alt="futbol">
-                <h2>Voley</h2>
-            </a>
-        </div>
+    
+    <!-- Deportes -->
+    <h1 id="inscripciones-title" class="text-info text-center">Inscripciones</h1>
+    <div class="row text-center mt-5">
+        <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='futbol')}}">
+            <img src="{{ url_for('static', filename='img/soccer-ball-illustration-png.webp') }}" class="img-fluid select-img" alt="futbol">
+            <h2>Futbol</h2>
+        </a>
+        <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='basket')}}">
+            <img src="{{ url_for('static', filename='img/sport-ball-basketball-png.png') }}" class="img-fluid select-img" alt="futbol">
+            <h2>Basket</h2>
+        </a>
+        <a class="col-md-4 img-link" href="{{ url_for('main.inscribirse', deporte='voley')}}">
+            <img src="{{ url_for('static', filename='img/sport-ball-volleyball-free-png.png') }}" class="img-fluid select-img" alt="futbol">
+            <h2>Voley</h2>
+        </a>
+    </div>
 
-        <!-- Deportes -->
-        {#
-        <div class="d-flex justify-content-center text-center mt-5">
-            <div class="card mr-5" style="width: 18rem;">
-                <img src="{{ url_for('static', filename='img/futbol_portada.jpg') }}" class="card-img-top" alt="futbol">
-                <div class="card-body">
-                <h5 class="card-title">Futbol</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ url_for('main.inscribirse', deporte='futbol')}}" class="btn btn-primary">Inscribirse</a>
-                </div>
-            </div>
-            <div class="card mr-5" style="width: 18rem;">
-                <img src="{{ url_for('static', filename='img/basket_portada.jpg') }}" class="card-img-top" alt="basket">
-                <div class="card-body">
-                <h5 class="card-title">Basket</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ url_for('main.inscribirse', deporte='basket')}}" class="btn btn-primary">Inscribirse</a>
-                </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img src="{{ url_for('static', filename='img/voley_portada.jpg') }}" class="card-img-top" height="190"  alt="voley">
-                <div class="card-body">
-                <h5 class="card-title">Voley</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="{{ url_for('main.inscribirse', deporte='voley')}}" class="btn btn-primary">Inscribirse</a>
-                </div>
+    <!-- Deportes -->
+    {#
+    <div class="d-flex justify-content-center text-center mt-5">
+        <div class="card mr-5" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='img/futbol_portada.jpg') }}" class="card-img-top" alt="futbol">
+            <div class="card-body">
+            <h5 class="card-title">Futbol</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="{{ url_for('main.inscribirse', deporte='futbol')}}" class="btn btn-primary">Inscribirse</a>
             </div>
         </div>
-        #}
+        <div class="card mr-5" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='img/basket_portada.jpg') }}" class="card-img-top" alt="basket">
+            <div class="card-body">
+            <h5 class="card-title">Basket</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="{{ url_for('main.inscribirse', deporte='basket')}}" class="btn btn-primary">Inscribirse</a>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('static', filename='img/voley_portada.jpg') }}" class="card-img-top" height="190"  alt="voley">
+            <div class="card-body">
+            <h5 class="card-title">Voley</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="{{ url_for('main.inscribirse', deporte='voley')}}" class="btn btn-primary">Inscribirse</a>
+            </div>
+        </div>
+    </div>
+    #}
+    <div class="container mt-5">
         <!-- Sponsors -->
-        <h1 class="mt-5 text-center text-success">Sponsors</h1>
+        <h1 id="sponsors-title" class="text-center text-success">Sponsors</h1>
         <div class="d-flex flex-column mt-5">
             {% for sponsor in sponsors %}
             {% if loop.index is even %}
@@ -189,6 +190,8 @@
 .img-link:hover {
     border-radius: 10px;
     background-color: rgb(37, 36, 36);
+    color: rgb(207, 194, 7);
+    text-decoration: none;
     scale: 1.1;
     transition-duration: 50ms;
     cursor: pointer;
@@ -197,13 +200,20 @@
 #inscripciones-title {
     font-size: 40px;
     transition: font-size 0.5s ease;
+    margin-top: 100px;
 }
 #inscripciones-title.enlarged {
     font-size: 60px;
 }
 
+#sponsors-title{
+    margin-top: 100px;
+    margin-bottom: 50px;
+    font-size: 50px;
+}
+
 .select-img{
-    height: 20vh;
+    height: 25vh;
 }
 
     /* Estilo para el fondo de la sección con imagen */
