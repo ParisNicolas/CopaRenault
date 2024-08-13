@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, url_for, redirect, flash, request
+from flask import Blueprint, render_template, url_for, redirect, flash, request, abort, jsonify
 from datetime import datetime
 
 from .forms import RegistrationForm
@@ -47,58 +47,56 @@ def info():
 
 
 #SOLO PARA EXPERIMENTAR CON FORMULARIO JSON
-@main_bp.route('/form')
-def form_json():
-    form = RegistrationForm()
-    return render_template('main/inscribirse-json.html', form=form, deporte='futbol')
 
-@main_bp.route('/inscribirse/', defaults={'deporte': None}, methods=['GET', 'POST'])
+@main_bp.route('/inscribirse/', defaults={'deporte': 'futbol'}, methods=['GET', 'POST'])
 @main_bp.route('/inscribirse/<deporte>', methods=['GET', 'POST'])
 def inscribirse(deporte):
+    if(not (deporte == 'futbol' or deporte == 'basket' or deporte == 'voley')):
+        abort(404)
+
     if request.method == 'POST':
         data = request.get_json()
-        print(data)
-        form = RegistrationForm(data=data)
+        form = RegistrationForm.from_json(data)
+
+        if form.validate_on_submit():
+            
+            equipo = Equipo(
+                nombre = data.nombre,
+                deporte = data.deporte,
+                colegio = data.colegio,
+                nombre_encargado = data.encargado,
+                telefono_encargado = data.telefono,
+            )
+            # Añadir el equipo a la sesión
+            #db.session.add(equipo)
+            #db.session.commit()
+            print(equipo)
+
+            # Crear objetos Integrante para cada miembro del equipo
+            for integrante in data.integrantes:
+                integrante_new = Integrante(
+                    nombre = integrante.nombre,
+                    telefono = integrante.telefono,
+                    DNI = integrante.dni,
+                    celiaco = integrante.celiaco,
+                    vegano = integrante.vegano,
+                    group_id = equipo.id
+                )
+                #db.session.add(integrante_new)
+            # Confirmar todos los cambios en la base de datos
+            #db.session.commit()
+            print(data.integrantes.length)
+
+            flash('El equipo ha sido registrado exitosamente.', 'success')
+            return redirect(url_for('main.success'))
+        else:
+            # Debugging: Print form errors
+            print("Form errors:", form.errors)
+            return jsonify({"success": False, "errors": form.errors})
+            #print("Form errors:", form.integrantes.errors)
+            #print(form.integrantes.data)
     else:
         form = RegistrationForm()
-
-    if form.validate_on_submit():
-        
-        equipo = Equipo(
-            nombre = data.nombre,
-            deporte = data.deporte,
-            colegio = data.colegio,
-            nombre_encargado = data.encargado,
-            telefono_encargado = data.telefono,
-        )
-        # Añadir el equipo a la sesión
-        #db.session.add(equipo)
-        #db.session.commit()
-        print(equipo)
-
-        # Crear objetos Integrante para cada miembro del equipo
-        for integrante in data.integrantes:
-            integrante_new = Integrante(
-                nombre = integrante.nombre,
-                telefono = integrante.telefono,
-                DNI = integrante.dni,
-                celiaco = integrante.celiaco,
-                vegano = integrante.vegano,
-                group_id = equipo.id
-            )
-            #db.session.add(integrante_new)
-        # Confirmar todos los cambios en la base de datos
-        #db.session.commit()
-        print(data.integrantes.length)
-
-        flash('El equipo ha sido registrado exitosamente.', 'success')
-        return redirect(url_for('main.success'))
-    else:
-        # Debugging: Print form errors
-        print("Form errors:", form.errors)
-        #print("Form errors:", form.integrantes.errors)
-        #print(form.integrantes.data)
-
     form.deporte.data = deporte
     return render_template('main/inscribirse-json.html', form=form, deporte=deporte)
 

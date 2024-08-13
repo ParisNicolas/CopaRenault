@@ -18,6 +18,7 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     RECAPTCHA_PUBLIC_KEY = config("RECAPTCHA_PUBLIC_KEY")
     RECAPTCHA_PRIVATE_KEY = config("RECAPTCHA_PRIVATE_KEY")
+    #RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
 
 class DevelopmentConfig(Config):

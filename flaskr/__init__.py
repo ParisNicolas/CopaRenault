@@ -8,6 +8,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_caching import Cache
+import wtforms_json
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -44,6 +45,7 @@ def create_app(test_config=None):
     
 
     """Initialize"""
+    wtforms_json.init()
     login_manager.init_app(app)
     bcrypt.init_app(app)
     db.init_app(app)

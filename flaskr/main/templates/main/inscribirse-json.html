@@ -8,7 +8,7 @@
 
 <div class="container my-5 mt-5 p-3 bg-info rounded">
     <h1 class="text-warning text-center mb-5">Inscribe un equipo</h1>
-    <form id="team-form">
+    <form id="team-form"> 
         {#Flashed Messages, enviados desde el backend#}
         {{ form.hidden_tag() }}
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -25,9 +25,6 @@
             <div class="col-6 form-group">
                 <label class="form-label" for="colegio">Colegio</label>
                 <input value="Juan pablo apostol" class="form-control" id="colegio" maxlength="100" minlength="2" name="colegio" placeholder="Nombre del colegio" required type="text">
-                {% for error in form.colegio.errors %}
-                <div class="error-message">{{ error }}</div>
-                {% endfor %}
             </div>
             {#Deporte#}
             <div class="col-6">
@@ -42,10 +39,8 @@
                     <div class="d-inline radio-img-div">
                         <img id="voley" class="radio-img mr-2 {% if deporte == 'voley' %}selected-radio{% endif %}" src="{{ url_for('static', filename='img/sport-ball-volleyball-free-png.png') }}" alt="voley">
                     </div>
+                    <h2 id="spam-deporte" class="ml-3 d-inline align-middle" style="font-style: italic;">{{deporte}}</h2>
                 </div>
-                {% for error in form.deporte.errors %}
-                <div class="error-message">{{ error }}</div>
-                {% endfor %}
             </div>
         </div>
         <hr>
@@ -55,15 +50,9 @@
         <div class="row mb-3">
             <div class="col">
                 <input value="Juancho Pepes" class="form-control" id="encargado" maxlength="50" minlength="2" name="encargado" placeholder="Nombre" required type="text">
-                {% for error in form.encargado.errors %}
-                <div class="error-message">{{ error }}</div>
-                {% endfor %}
             </div>
             <div class="col">
                 <input value="3512343879" class="form-control" id="telefono" name="telefono" placeholder="Telefono" required type="tel">
-                {% for error in form.telefono.errors %}
-                <div class="error-message">{{ error }}</div>
-                {% endfor %}
             </div>
         </div>
         <hr>
@@ -72,9 +61,6 @@
         <div class="mb-3">
             <label class="form-label" for="nombre_equipo">Nombre del equipo (Opcional)</label>
             <input value="Warriors" class="form-control" id="nombre_equipo" maxlength="50" name="nombre_equipo" type="text">
-            {% for error in form.nombre_equipo.errors %}
-                <div class="error-message">{{ error }}</div>
-            {% endfor %}
         </div>
 
         {#INTEGRANTES#}
@@ -94,9 +80,9 @@
                 <tr>
                     <td width="20" scope="row">{{ loop.index }}</td>
                     <td contenteditable="true" data-field="nombre" class="{% if integrante.nombre.errors %}has-error{% endif %}">pepe{{'' if integrante.nombre.data == none else integrante.nombre.data}}</td>
-                    <td contenteditable="true" data-field="telefono" class="{% if integrante.telefono.errors %}has-error{% endif %}">pepe{{ '' if integrante.telefono.data == none else integrante.telefono.data }}</td>
-                    <td contenteditable="true" data-field="email" class="{% if integrante.email.errors %}has-error{% endif %}">pepe{{ '' if integrante.email.data == none else integrante.email.data }}</td>
-                    <td contenteditable="true" data-field="dni" class="{% if integrante.dni.errors %}has-error{% endif %}">pepe{{ '' if integrante.dni.data == none else integrante.dni.data }}</td>
+                    <td contenteditable="true" data-field="telefono" class="{% if integrante.telefono.errors %}has-error{% endif %}">3512323576{{ '' if integrante.telefono.data == none else integrante.telefono.data }}</td>
+                    <td contenteditable="true" data-field="email" class="{% if integrante.email.errors %}has-error{% endif %}">d46463823@itr.edu.ar{{ '' if integrante.email.data == none else integrante.email.data }}</td>
+                    <td contenteditable="true" data-field="dni" class="{% if integrante.dni.errors %}has-error{% endif %}">46463823{{ '' if integrante.dni.data == none else integrante.dni.data }}</td>
                     <td width="220">
                         <div class="form-check form-check-inline {% if integrante.celiaco.errors %}has-error{% endif %}">
                             <input class="form-check-input" type="checkbox" name="options" value="celiaco">
@@ -111,6 +97,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div id="error-messages" class="alert alert-danger d-none"></div>
         <div class="alert alert-warning d-none" role="alert" id="table-alert">
             ¡¡Por favor complete los datos faltantes!!
         </div>
@@ -119,18 +106,18 @@
             <button type="button" id="remove-row-btn" class="btn btn-danger" onclick="removeRow()" disabled>Eliminar</button>
         </div>
         {#Recaptcha y Submit#}
-        <div class="form-group">
-            {{ form.recaptcha }}
-        </div>
+        <div class="g-recaptcha mb-2" data-sitekey="6LeLqv8pAAAAAH7YGui5s5qnxd7EPZkFOLTdgz4o"></div>
         <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
 </div>
 {% endblock %} 
 
 {% block script %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script>
     const images = document.querySelectorAll('.radio-img');
-    let deporte = {{ deporte|tojson }};
+    const spam_deporte = document.getElementById('spam-deporte');
+    let deporte = "{{ deporte }}";
 
     images.forEach(image => {
         image.addEventListener('click', function() {
@@ -141,6 +128,7 @@
             this.classList.add('selected-radio');
 
             deporte = this.id;
+            spam_deporte.innerText = deporte
         });
     });
 
@@ -200,10 +188,10 @@
         const telefono = form.telefono.value;
         const nombre_equipo = form.nombre_equipo.value;
 
+
         const rows = form.querySelectorAll('tbody tr');
         let isValid = true;
         const integrantes = [];
-
         rows.forEach(row => {
             const cells = row.querySelectorAll('td');
             const nombre = cells[1].innerText.trim();
@@ -217,11 +205,10 @@
                 //row.style.backgroundColor = 'lightcoral'; // Color para filas no válidas
                 alerta.classList.remove('d-none');
 
-                cells[1].style.backgroundColor = !nombre ? 'lightcoral':'';
-                cells[2].style.backgroundColor = !telefono ? 'lightcoral':'';
-                cells[3].style.backgroundColor = !email ? 'lightcoral':'';
-                cells[4].style.backgroundColor = !dni ? 'lightcoral':'';
-                return;
+                !nombre ? cells[1].classList.add('has-error') : cells[1].classList.remove('has-error');
+                !telefono ? cells[2].classList.add('has-error') : cells[2].classList.remove('has-error');
+                !email ? cells[3].classList.add('has-error') : cells[3].classList.remove('has-error');
+                !dni ? cells[4].classList.add('has-error') : cells[4].classList.remove('has-error');
             } else {
                 alerta.classList.add('d-none');
                 row.style.backgroundColor = ''; // Resetear color
@@ -233,8 +220,23 @@
 
             integrantes.push({ nombre, telefono, email, dni, celiaco, vegano });
         });
+        if (!isValid) return;
 
-        const data = { deporte, colegio, encargado, telefono, nombre_equipo, integrantes };
+        recaptchaResponse = grecaptcha.getResponse()
+        if (!recaptchaResponse) {
+            alert('Por favor, complete el reCAPTCHA.');
+            return;
+        }
+
+        const data = { 
+            deporte, 
+            colegio, 
+            encargado, 
+            telefono, 
+            nombre_equipo, 
+            integrantes, 
+            recaptcha: recaptchaResponse
+        };
 
         fetch('/inscribirse', {
             method: 'POST',
@@ -246,22 +248,68 @@
         .then(response => response.json())
         .then(data => {
             const errorMessages = document.getElementById('error-messages');
-            if (data.errors) {
+            if (data.success) {
+                // Redirigir o mostrar un mensaje de éxito
+                alert('Formulario enviado con éxito');
+            } else {
+                // Limpiar mensajes de error previos
                 errorMessages.innerHTML = '';
                 errorMessages.classList.remove('d-none');
-                for (const [field, messages] of Object.entries(data.errors)) {
-                    messages.forEach(message => {
-                        errorMessages.innerHTML += `<p>${field}: ${message}</p>`;
+
+                
+
+
+                rows.forEach(row => {
+                    row.querySelectorAll('td').forEach(cell => {
+                        cell.removeAttribute('data-bs-toggle');
+                        cell.removeAttribute('data-bs-placement');
+                        cell.removeAttribute('title');
+                        cell.classList.remove('has-error');
                     });
-                }
-            } else {
-                errorMessages.classList.add('d-none');
-                console.log('Datos enviados con éxito:', data);
+                });
+
+                // Mostrar errores de validación
+                data.errors.integrantes.forEach((error,i) => {
+                    const row = rows[i]
+                    console.log(row)
+                    if (error.nombre) {
+                        const cell = row.querySelector('td[data-field="nombre"]');
+                        cell.setAttribute('data-bs-toggle', 'tooltip');
+                        cell.setAttribute('data-bs-placement', 'top');
+                        cell.setAttribute('title', error.nombre.join(', '));
+                        cell.classList.add('has-error');
+                    }
+                    if (error.telefono) {
+                        const cell = row.querySelector('td[data-field="telefono"]');
+                        cell.setAttribute('data-bs-toggle', 'tooltip');
+                        cell.setAttribute('data-bs-placement', 'top');
+                        cell.setAttribute('title', error.telefono.join(', '));
+                        cell.classList.add('has-error');
+                    }
+                    if (error.email) {
+                        const cell = row.querySelector('td[data-field="email"]');
+                        cell.setAttribute('data-bs-toggle', 'tooltip');
+                        cell.setAttribute('data-bs-placement', 'top');
+                        cell.setAttribute('title', error.email.join(', '));
+                        cell.classList.add('has-error');
+                    }
+                    if (error.dni) {
+                        const cell = row.querySelector('td[data-field="dni"]');
+                        cell.setAttribute('data-bs-toggle', 'tooltip');
+                        cell.setAttribute('data-bs-placement', 'top');
+                        cell.setAttribute('title', error.dni.join(', '));
+                        cell.classList.add('has-error');
+                    }
+                })
+
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+                    new bootstrap.Tooltip(tooltipTriggerEl);
+                });
             }
         });
     });
 </script>
-
 {% endblock %}
 
 {% block css %}
@@ -291,6 +339,7 @@
     }
     .has-error {
         border-color: #dc3545;
+        background-color: lightcoral;
     }
     .error-message {
         color: #dc3545;
